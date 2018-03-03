@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/walk8243/nodejs-express#readme",
   "dependencies": {
-    "express": "^4.16.2"
+    "express": "^4.16.2",
+    "http-auth": "^3.2.3"
   }
 }

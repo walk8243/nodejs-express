@@ -1,0 +1,20 @@
+{
+  "name": "nodejs-express",
+  "version": "1.0.0",
+  "description": "Node.jsのフレームワークであるExpressを使ってサイト構築",
+  "main": "index.js",
+  "scripts": {
+    "app": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/walk8243/nodejs-express.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/walk8243/nodejs-express/issues"
+  },
+  "homepage": "https://github.com/walk8243/nodejs-express#readme"
+}

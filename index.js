@@ -8,15 +8,16 @@ var app   = express(),
 
 app.use('/admin', admin);
 
-var routeObj, route = {};
 try{
   routeObj = yaml.safeLoad(fs.readFileSync('./route.yml', 'utf8'));
 }catch(e){
   console.log(e);
 }
 // console.log(routeObj);
-moldingRoute(routeObj, '/');
-console.log(route);
+var route = {}, rest = {};
+moldingRoute(routeObj, '');
+// console.log(route);
+delete routeObj;
 
 var basic = auth.basic({
   realm: "aaa"
@@ -33,11 +34,19 @@ app.listen(3000, function(){
 //     res.end('Hello World!');
 //   });
 Object.keys(route).forEach(function(path){
-  // console.log(path + ': ' + route[path]);
+  // console.log(`'${path}'=> title:'${route[path]['title']}', page:'${route[path]['page']}'`);
   app.route(path)
     .get(function(req, res){
+      // console.log(req.params);
+      var vars = req.params;
+      Object.keys(vars).forEach(function(key){
+        regexp = new RegExp(`^${route[path]['var'][key]}$`);
+        if(!vars[key].match(regexp)){
+          console.log('NO!');
+          res.status(404).end();
+        }
+      });
       res.end(route[path].title);
-      console.log(req.params);
     });
 });
 
@@ -52,20 +61,32 @@ function moldingRoute(obj, basePath){
     // console.log(obj[key]);
     var index;
     switch(key){
-      case '_num_': case '_string_':
-        index = basePath + `:${obj[key].var}`;
+      case '_num_':
+        index = basePath + '/' + `:${obj[key].var}`;
+        rest[obj[key].var] = "\\d+";
+        break;
+      case '_string_':
+        index = basePath + '/' + `:${obj[key].var}`;
+        rest[obj[key].var] = "\\S+";
         break;
       default:
-        index = basePath + key;
+        index = basePath + '/' + key;
+        break;
     }
+
     if(obj[key].hasOwnProperty('page') && obj[key].page){
+      // console.log(rest);
       route[index] = {
         title : obj[key].title,
-        page  : obj[key].page
+        page  : obj[key].page,
+        var   : Object.assign({}, rest)
       }
     }
+
     if(obj[key].hasOwnProperty('children')){
-      moldingRoute(obj[key].children, `${index}/`);
+      moldingRoute(obj[key].children, index);
     }
+
+    delete rest[obj[key].var];
   });
 }

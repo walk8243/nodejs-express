@@ -33,3 +33,8 @@
     "test":
       title: "num-test"
       page: "num/test"
+      children:
+        "_string_":
+          title: "num-test-string"
+          page: "num/test/string"
+          var: "string_id"

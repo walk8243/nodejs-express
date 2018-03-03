@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/walk8243/nodejs-express/issues"
   },
-  "homepage": "https://github.com/walk8243/nodejs-express#readme"
+  "homepage": "https://github.com/walk8243/nodejs-express#readme",
+  "dependencies": {
+    "express": "^4.16.2"
+  }
 }

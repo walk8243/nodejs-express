@@ -1,0 +1,35 @@
+"":
+  title: "index"
+  page: "index"
+
+"test":
+  title: "test"
+  page: "test"
+  children:
+    "test":
+      title: "test-test"
+      page: "test/test"
+"competition":
+  title: "competition"
+  page: "competition"
+  children:
+    "year":
+      children:
+        "_num_":
+          title: "com-year"
+          page: "competition/year"
+          var: "year_id"
+    "competition":
+      children:
+        "_num_":
+          title: "com-com"
+          page: "competition/competition"
+          var: "com_id"
+"_num_":
+  title: "num"
+  page: "num"
+  var: "test_id"
+  children:
+    "test":
+      title: "num-test"
+      page: "num/test"

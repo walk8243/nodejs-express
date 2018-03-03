@@ -19,6 +19,8 @@
   "homepage": "https://github.com/walk8243/nodejs-express#readme",
   "dependencies": {
     "express": "^4.16.2",
-    "http-auth": "^3.2.3"
+    "fs": "0.0.1-security",
+    "http-auth": "^3.2.3",
+    "js-yaml": "^3.10.0"
   }
 }

@@ -1,12 +1,18 @@
 var express = require('express'),
     auth    = require('http-auth'),
+    vhost   = require('vhost'),
     fs      = require('fs'),
     yaml    = require('js-yaml');
 
 var app   = express(),
+    main  = express(),
     admin = express();
 
-app.use('/admin', admin);
+const hostname = 'localhost';
+app.use(vhost(hostname, main));
+app.use(vhost(`main.${hostname}`, main));
+app.use(vhost(`www.${hostname}`, main));
+app.use(vhost(`admin.${hostname}`, admin));
 
 try{
   routeObj = yaml.safeLoad(fs.readFileSync('./route.yml', 'utf8'));

@@ -26,7 +26,7 @@ var basic = auth.basic({
 });
 
 app.listen(3000, function(){
-  console.log('Example app listening on port 3000!');
+  console.log('Server listening on port 3000!');
 });
 
 // app.route('/')
@@ -34,18 +34,20 @@ app.listen(3000, function(){
 //     res.end('Hello World!');
 //   });
 Object.keys(route).forEach(function(path){
-  // console.log(`'${path}'=> title:'${route[path]['title']}', page:'${route[path]['page']}'`);
-  app.route(path)
+  // console.log(`'${path}'=> title:'${route[path].title}', page:'${route[path].page}'`);
+  main.route(path)
     .get(function(req, res){
       // console.log(req.params);
-      var vars = req.params;
-      Object.keys(vars).forEach(function(key){
-        regexp = new RegExp(`^${route[path]['var'][key]}$`);
-        if(!vars[key].match(regexp)){
-          console.log('NO!');
-          res.status(404).end();
-        }
-      });
+      if(Object.keys(req.params).length > 0){
+        var vars = req.params;
+        Object.keys(vars).forEach(function(key){
+          regexp = new RegExp(`^${route[path]['var'][key]}$`);
+          if(!vars[key].match(regexp)){
+            console.log('NO!');
+            res.status(404).end();
+          }
+        });
+      }
       res.end(route[path].title);
     });
 });

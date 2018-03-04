@@ -2,17 +2,30 @@ var express = require('express'),
     auth    = require('http-auth'),
     vhost   = require('vhost'),
     fs      = require('fs'),
-    yaml    = require('js-yaml');
+    yaml    = require('js-yaml'),
+    config  = require('config');
 
-var app   = express(),
-    main  = express(),
-    admin = express();
+// console.log(config);
 
-const hostname = 'localhost';
-app.use(vhost(hostname, main));
-app.use(vhost(`main.${hostname}`, main));
-app.use(vhost(`www.${hostname}`, main));
-app.use(vhost(`admin.${hostname}`, admin));
+const setting   = config.setting,
+      hostname  = setting.hostname;
+var app   = express();
+for(var server of setting.server){
+  // console.log(server);
+  eval(`var ${server.name} = express();`);
+  for(var subdomain of server.subdomain){
+    if(subdomain == null){
+      console.log(hostname);
+      eval(`app.use(vhost('${hostname}', ${server.name}));`);
+    }else{
+      console.log(`${subdomain}.${hostname}`);
+      eval(`app.use(vhost('${subdomain}.${hostname}', ${server.name}));`);
+    }
+  }
+}
+// if(typeof(main) != "undefined"){
+//   console.log("Yes!");
+// }
 
 try{
   routeObj = yaml.safeLoad(fs.readFileSync('./route.yml', 'utf8'));

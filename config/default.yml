@@ -1,0 +1,11 @@
+setting :
+  hostname  : localhost
+  server    :
+    -
+      name      : main
+      subdomain : [~, www, main]
+      route     : route.yml
+    -
+      name      : admin
+      subdomain : [admin]
+      route     : admin.yml

@@ -10,33 +10,63 @@ var express = require('express'),
 const setting   = config.setting,
       hostname  = setting.hostname;
 var app   = express();
+var route = {}, rest;
 for(var server of setting.server){
   // console.log(server);
-  eval(`var ${server.name} = express();`);
+  let serverName = server.name;
+  eval(`var ${serverName} = express();`);
   for(var subdomain of server.subdomain){
     if(subdomain == null){
-      console.log(hostname);
-      eval(`app.use(vhost('${hostname}', ${server.name}));`);
+      // console.log(hostname);
+      app.use(vhost(hostname, eval(`${serverName}`)));
     }else{
-      console.log(`${subdomain}.${hostname}`);
-      eval(`app.use(vhost('${subdomain}.${hostname}', ${server.name}));`);
+      // console.log(subdomain+'.'+hostname);
+      app.use(vhost(subdomain+'.'+hostname, eval(`${serverName}`)));
     }
   }
+
+  // console.log(eval(`${serverName}`));
+  try{
+    if(isExistFile(`./config/${server.route}`)){
+      console.log('Yes!');
+      routeObj = yaml.safeLoad(fs.readFileSync(`./config/${server.route}`, 'utf8'));
+      // console.log(routeObj);
+
+      route[serverName] = {},
+      rest = {};
+      moldingRoute(serverName, routeObj, '');
+      // console.log(route);
+      delete routeObj;
+
+      Object.keys(route[serverName]).forEach(function(path){
+        console.log(`'${path}'=> title:'${route[serverName][path].title}', page:'${route[serverName][path].page}'`);
+        eval(`${serverName}`).route(path)
+          .get(function(req, res){
+            console.log(req.params);
+            if(Object.keys(req.params).length > 0){
+              var vars = req.params;
+              Object.keys(vars).forEach(function(key){
+                regexp = new RegExp(`^${route[serverName][path]['var'][key]}$`);
+                if(vars[key].match(regexp) == null){
+                  // console.log('NO!');
+                  res.status(404).end();
+                }
+              });
+            }
+            res.end(route[serverName][path].title);
+          });
+      });
+    }else{
+      console.log('No!');
+    }
+  }catch(e){
+    console.log(e);
+  }
 }
+// return;
 // if(typeof(main) != "undefined"){
 //   console.log("Yes!");
 // }
-
-try{
-  routeObj = yaml.safeLoad(fs.readFileSync('./route.yml', 'utf8'));
-}catch(e){
-  console.log(e);
-}
-// console.log(routeObj);
-var route = {}, rest = {};
-moldingRoute(routeObj, '');
-// console.log(route);
-delete routeObj;
 
 var basic = auth.basic({
   realm: "aaa"
@@ -48,35 +78,12 @@ app.listen(3000, function(){
   console.log('Server listening on port 3000!');
 });
 
-// app.route('/')
-//   .get(function(req, res){
-//     res.end('Hello World!');
-//   });
-Object.keys(route).forEach(function(path){
-  // console.log(`'${path}'=> title:'${route[path].title}', page:'${route[path].page}'`);
-  main.route(path)
-    .get(function(req, res){
-      // console.log(req.params);
-      if(Object.keys(req.params).length > 0){
-        var vars = req.params;
-        Object.keys(vars).forEach(function(key){
-          regexp = new RegExp(`^${route[path]['var'][key]}$`);
-          if(vars[key].match(regexp) == null){
-            // console.log('NO!');
-            res.status(404).end();
-          }
-        });
-      }
-      res.end(route[path].title);
-    });
-});
-
 admin.route('/')
   .get(auth.connect(basic), function(req, res){
     res.end('Welcome to private area - ' + req.user);
   });
 
-function moldingRoute(obj, basePath){
+function moldingRoute(inputArea, obj, basePath){
   Object.keys(obj).forEach(function(key){
     // console.log(key);
     // console.log(obj[key]);
@@ -97,7 +104,7 @@ function moldingRoute(obj, basePath){
 
     if(obj[key].hasOwnProperty('page') && obj[key].page){
       // console.log(rest);
-      route[index] = {
+      route[inputArea][index] = {
         title : obj[key].title,
         page  : obj[key].page,
         var   : Object.assign({}, rest)
@@ -105,9 +112,20 @@ function moldingRoute(obj, basePath){
     }
 
     if(obj[key].hasOwnProperty('children')){
-      moldingRoute(obj[key].children, index);
+      moldingRoute(inputArea, obj[key].children, index);
     }
 
     delete rest[obj[key].var];
   });
+}
+
+function isExistFile(filepath){
+  try{
+    fs.statSync(filepath);
+    return true;
+  }catch(err){
+    if(err.code === 'ENOENT'){
+      return false;
+    }
+  }
 }

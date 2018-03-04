@@ -28,7 +28,7 @@ for(var server of setting.server){
   // console.log(eval(`${serverName}`));
   try{
     if(isExistFile(`./config/${server.route}`)){
-      console.log('Yes!');
+      // console.log('Yes!');
       routeObj = yaml.safeLoad(fs.readFileSync(`./config/${server.route}`, 'utf8'));
       // console.log(routeObj);
 
@@ -39,10 +39,10 @@ for(var server of setting.server){
       delete routeObj;
 
       Object.keys(route[serverName]).forEach(function(path){
-        console.log(`'${path}'=> title:'${route[serverName][path].title}', page:'${route[serverName][path].page}'`);
+        // console.log(`'${path}'=> title:'${route[serverName][path].title}', page:'${route[serverName][path].page}'`);
         eval(`${serverName}`).route(path)
           .get(function(req, res){
-            console.log(req.params);
+            // console.log(req.params);
             if(Object.keys(req.params).length > 0){
               var vars = req.params;
               Object.keys(vars).forEach(function(key){
@@ -57,13 +57,12 @@ for(var server of setting.server){
           });
       });
     }else{
-      console.log('No!');
+      // console.log('No!');
     }
   }catch(e){
     console.log(e);
   }
 }
-// return;
 // if(typeof(main) != "undefined"){
 //   console.log("Yes!");
 // }
@@ -78,10 +77,10 @@ app.listen(3000, function(){
   console.log('Server listening on port 3000!');
 });
 
-admin.route('/')
-  .get(auth.connect(basic), function(req, res){
-    res.end('Welcome to private area - ' + req.user);
-  });
+// admin.route('/')
+//   .get(auth.connect(basic), function(req, res){
+//     res.end('Welcome to private area - ' + req.user);
+//   });
 
 function moldingRoute(inputArea, obj, basePath){
   Object.keys(obj).forEach(function(key){

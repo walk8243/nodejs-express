@@ -48,8 +48,8 @@ Object.keys(route).forEach(function(path){
         var vars = req.params;
         Object.keys(vars).forEach(function(key){
           regexp = new RegExp(`^${route[path]['var'][key]}$`);
-          if(!vars[key].match(regexp)){
-            console.log('NO!');
+          if(vars[key].match(regexp) == null){
+            // console.log('NO!');
             res.status(404).end();
           }
         });

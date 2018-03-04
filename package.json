@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "app": "node app.js",
+    "create": "node createServer.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

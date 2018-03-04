@@ -20,3 +20,34 @@ npm run create createSite
 `createSite`は新しく作成するサイトに合わせてください。  
 何も指定されなかった場合は、`create`として作成されます。  
 同じ名前でサイトを作成することはできないので、プログラム終了後に変更してください。
+
+## File organization
+```
+nodejs-express/
+  |
+  |-- config/
+  |     |-- default.yml
+  |     |-- route.yml
+  |     `-- admin.yml  
+  |-- docs/
+  |     `-- サーバ構成.jpg
+  |-- page/
+  |     |-- main/
+  |     |     `-- index.js
+  |     `-- admin/  
+  |           `-- index.js
+  |-- template/
+  |     |-- main/
+  |     |     `-- index.ejs
+  |     `-- admin/  
+  |           `-- index.ejs
+  |
+  |-- .gitignore
+  |-- package-lock.json
+  |-- package.json
+  |-- README.md
+  |
+  |-- app.js
+  |-- createServer.js
+  `-- error.js
+```

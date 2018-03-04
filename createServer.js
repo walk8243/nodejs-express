@@ -1,6 +1,8 @@
 var fs      = require('fs'),
     yaml    = require('js-yaml');
 
+var error   = require('./error.js');
+
 const configFile = './config/default.yml';
 try{
   routeObj = yaml.safeLoad(fs.readFileSync(configFile, 'utf8'));
@@ -18,7 +20,7 @@ try{
     for(var host of server){
       // console.log(host);
       if(host.name == newServer.name){
-        console.log(`Server'${newServer.name}' is Already exist!`);
+        console.log(error.printErrorMessage(1, [newServer.name]));
         break block_createServer;
       }
     }

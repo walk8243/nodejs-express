@@ -2,6 +2,7 @@ var fs      = require('fs'),
     yaml    = require('js-yaml');
 
 var error   = require('./error.js');
+myFunc  = require('./func.js');
 
 const configFile = './config/default.yml';
 try{

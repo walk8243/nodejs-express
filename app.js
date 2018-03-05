@@ -5,6 +5,7 @@ var express = require('express'),
     yaml    = require('js-yaml'),
     config  = require('config');
 
+myFunc  = require('./func.js');
 // console.log(config);
 
 var digest = auth.digest({

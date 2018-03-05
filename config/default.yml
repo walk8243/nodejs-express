@@ -11,3 +11,8 @@ setting:
       subdomain:
         - admin
       route: admin.yml
+      auth: true
+    - name: create
+      subdomain:
+        - create
+      route: create.yml

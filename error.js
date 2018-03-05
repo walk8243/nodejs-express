@@ -14,6 +14,12 @@ Hostname'${contents[0]}' is not appropriate!
 Please enter a different name!
       `;
       break;
+    case 3:
+      message = `
+Route file'${contents[0]}' is Already exist!
+Please change the name of '${contents[0]}' or enter a different name!
+      `;
+      break;
     default:
   }
 

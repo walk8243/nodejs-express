@@ -45,7 +45,7 @@ try{
     var routeFilename = `./config/${servername}.yml`,
         routeObj = {},
         routeYaml;
-    if(isExistFile(routeFilename)){
+    if(myFunc.isExistFile(routeFilename)){
       // console.log('Yes!');
       console.log(error.printErrorMessage(3, [routeFilename]));
       break block_createServer;
@@ -68,7 +68,7 @@ try{
 
     // pageディレクトリに追加
     var pageDir = `./page/${servername}`;
-    if(isExistFile(pageDir)){
+    if(myFunc.isExistFile(pageDir)){
       // console.log('Yes!');
       rmdir(pageDir);
     }else{
@@ -82,7 +82,7 @@ try{
 
     // templateディレクトリに追加
     var templateDir = `./template/${servername}`;
-    if(isExistFile(templateDir)){
+    if(myFunc.isExistFile(templateDir)){
       // console.log('Yes!');
       rmdir(templateDir);
     }else{
@@ -110,17 +110,6 @@ try{
   }
 }catch(err){
   console.log(err);
-}
-
-function isExistFile(filepath){
-  try{
-    fs.statSync(filepath);
-    return true;
-  }catch(err){
-    if(err.code === 'ENOENT'){
-      return false;
-    }
-  }
 }
 
 function rmdir(path){

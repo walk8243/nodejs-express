@@ -1,10 +1,10 @@
 var express = require('express'),
     auth    = require('http-auth'),
     vhost   = require('vhost'),
-    fs      = require('fs'),
     yaml    = require('js-yaml'),
     config  = require('config');
 
+fs      = require('fs'),
 myFunc  = require('./func.js');
 // console.log(config);
 
@@ -13,12 +13,12 @@ var digest = auth.digest({
   file  : "./.htpasswd"
 });
 
-
 const setting   = config.setting,
       hostname  = setting.hostname;
-var app   = express();
+var app = express();
 
 var route = {},
+    page  = {},
     rest;
 for(var server of setting.server){
   // console.log(server);
@@ -33,10 +33,11 @@ for(var server of setting.server){
       app.use(vhost(subdomain+'.'+hostname, eval(`${serverName}`)));
     }
   }
+  page[serverName] = {};
 
   // console.log(eval(`${serverName}`));
   try{
-    if(isExistFile(`./config/${server.route}`)){
+    if(myFunc.isExistFile(`./config/${server.route}`)){
       // console.log('Yes!');
       routeObj = yaml.safeLoad(fs.readFileSync(`./config/${server.route}`, 'utf8'));
       // console.log(routeObj);
@@ -51,6 +52,11 @@ for(var server of setting.server){
         // console.log(server.name);
         Object.keys(route[serverName]).forEach(function(path){
           // console.log(`'${path}'=> title:'${route[serverName][path].title}', page:'${route[serverName][path].page}'`);
+          if(myFunc.isExistFile(`./page/${serverName}/${route[serverName][path].page}.js`)){
+            page[serverName][path] = require(`./page/${serverName}/${route[serverName][path].page}.js`);
+          }else{
+            console.log(`'./page/${serverName}/${route[serverName][path].page}.js' isn't exist!`);
+          }
           let sendData = {
             server  : serverName,
             path    : path,
@@ -66,6 +72,11 @@ for(var server of setting.server){
       }else{
         Object.keys(route[serverName]).forEach(function(path){
           // console.log(`'${path}'=> title:'${route[serverName][path].title}', page:'${route[serverName][path].page}'`);
+          if(myFunc.isExistFile(`./page/${serverName}/${route[serverName][path].page}.js`)){
+            page[serverName][path] = require(`./page/${serverName}/${route[serverName][path].page}.js`);
+          }else{
+            console.log(`'./page/${serverName}/${route[serverName][path].page}.js' isn't exist!`);
+          }
           let sendData = {
             server  : serverName,
             path    : path,
@@ -100,8 +111,11 @@ app.listen(3000, function(){
 //   });
 
 function onRequest(req, res, data){
+  data.param = req.params;
+
   // console.log(data);
   // console.log(req.params);
+  page[data.server][data.path].render(res, data);
   if(Object.keys(req.params).length > 0){
     var vars = req.params;
     Object.keys(vars).forEach(function(key){
@@ -149,15 +163,4 @@ function moldingRoute(inputArea, obj, basePath){
 
     delete rest[obj[key].var];
   });
-}
-
-function isExistFile(filepath){
-  try{
-    fs.statSync(filepath);
-    return true;
-  }catch(err){
-    if(err.code === 'ENOENT'){
-      return false;
-    }
-  }
 }

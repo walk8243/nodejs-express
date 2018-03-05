@@ -16,7 +16,9 @@ var digest = auth.digest({
 const setting   = config.setting,
       hostname  = setting.hostname;
 var app   = express();
-var route = {}, rest;
+
+var route = {},
+    rest;
 for(var server of setting.server){
   // console.log(server);
   let serverName = server.name;
@@ -48,39 +50,31 @@ for(var server of setting.server){
         // console.log(server.name);
         Object.keys(route[serverName]).forEach(function(path){
           // console.log(`'${path}'=> title:'${route[serverName][path].title}', page:'${route[serverName][path].page}'`);
+          let sendData = {
+            server  : serverName,
+            path    : path,
+            title   : route[serverName][path].title,
+            page    : route[serverName][path].page,
+            var     : route[serverName][path].var
+          }
           eval(`${serverName}`).route(path)
             .get(auth.connect(digest), function(req, res){
-              // console.log(req.params);
-              if(Object.keys(req.params).length > 0){
-                var vars = req.params;
-                Object.keys(vars).forEach(function(key){
-                  regexp = new RegExp(`^${route[serverName][path]['var'][key]}$`);
-                  if(vars[key].match(regexp) == null){
-                    // console.log('NO!');
-                    res.status(404).end();
-                  }
-                });
-              }
-              res.end(route[serverName][path].title);
+              onRequest(req, res, sendData);
             });
         });
       }else{
         Object.keys(route[serverName]).forEach(function(path){
           // console.log(`'${path}'=> title:'${route[serverName][path].title}', page:'${route[serverName][path].page}'`);
+          let sendData = {
+            server  : serverName,
+            path    : path,
+            title   : route[serverName][path].title,
+            page    : route[serverName][path].page,
+            var     : route[serverName][path].var
+          }
           eval(`${serverName}`).route(path)
             .get(function(req, res){
-              // console.log(req.params);
-              if(Object.keys(req.params).length > 0){
-                var vars = req.params;
-                Object.keys(vars).forEach(function(key){
-                  regexp = new RegExp(`^${route[serverName][path]['var'][key]}$`);
-                  if(vars[key].match(regexp) == null){
-                    // console.log('NO!');
-                    res.status(404).end();
-                  }
-                });
-              }
-              res.end(route[serverName][path].title);
+              onRequest(req, res, sendData);
             });
         });
       }
@@ -103,6 +97,22 @@ app.listen(3000, function(){
 //   .get(auth.connect(digest), function(req, res){
 //     res.end('Welcome to private area - ' + req.user);
 //   });
+
+function onRequest(req, res, data){
+  // console.log(data);
+  // console.log(req.params);
+  if(Object.keys(req.params).length > 0){
+    var vars = req.params;
+    Object.keys(vars).forEach(function(key){
+      regexp = new RegExp(`^${data.var[key]}$`);
+      if(vars[key].match(regexp) == null){
+        // console.log('NO!');
+        res.status(404).end();
+      }
+    });
+  }
+  res.end(data.title);
+}
 
 function moldingRoute(inputArea, obj, basePath){
   Object.keys(obj).forEach(function(key){

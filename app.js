@@ -7,6 +7,12 @@ var express = require('express'),
 
 // console.log(config);
 
+var digest = auth.digest({
+  realm : "admin",
+  file  : "./.htpasswd"
+});
+
+
 const setting   = config.setting,
       hostname  = setting.hostname;
 var app   = express();
@@ -38,24 +44,46 @@ for(var server of setting.server){
       // console.log(route);
       delete routeObj;
 
-      Object.keys(route[serverName]).forEach(function(path){
-        // console.log(`'${path}'=> title:'${route[serverName][path].title}', page:'${route[serverName][path].page}'`);
-        eval(`${serverName}`).route(path)
-          .get(function(req, res){
-            // console.log(req.params);
-            if(Object.keys(req.params).length > 0){
-              var vars = req.params;
-              Object.keys(vars).forEach(function(key){
-                regexp = new RegExp(`^${route[serverName][path]['var'][key]}$`);
-                if(vars[key].match(regexp) == null){
-                  // console.log('NO!');
-                  res.status(404).end();
-                }
-              });
-            }
-            res.end(route[serverName][path].title);
-          });
-      });
+      if(server.hasOwnProperty('auth') && server.auth){
+        // console.log(server.name);
+        Object.keys(route[serverName]).forEach(function(path){
+          // console.log(`'${path}'=> title:'${route[serverName][path].title}', page:'${route[serverName][path].page}'`);
+          eval(`${serverName}`).route(path)
+            .get(auth.connect(digest), function(req, res){
+              // console.log(req.params);
+              if(Object.keys(req.params).length > 0){
+                var vars = req.params;
+                Object.keys(vars).forEach(function(key){
+                  regexp = new RegExp(`^${route[serverName][path]['var'][key]}$`);
+                  if(vars[key].match(regexp) == null){
+                    // console.log('NO!');
+                    res.status(404).end();
+                  }
+                });
+              }
+              res.end(route[serverName][path].title);
+            });
+        });
+      }else{
+        Object.keys(route[serverName]).forEach(function(path){
+          // console.log(`'${path}'=> title:'${route[serverName][path].title}', page:'${route[serverName][path].page}'`);
+          eval(`${serverName}`).route(path)
+            .get(function(req, res){
+              // console.log(req.params);
+              if(Object.keys(req.params).length > 0){
+                var vars = req.params;
+                Object.keys(vars).forEach(function(key){
+                  regexp = new RegExp(`^${route[serverName][path]['var'][key]}$`);
+                  if(vars[key].match(regexp) == null){
+                    // console.log('NO!');
+                    res.status(404).end();
+                  }
+                });
+              }
+              res.end(route[serverName][path].title);
+            });
+        });
+      }
     }else{
       // console.log('No!');
     }
@@ -67,18 +95,12 @@ for(var server of setting.server){
 //   console.log("Yes!");
 // }
 
-var basic = auth.basic({
-  realm: "aaa"
-},function(username, password, callback){
-  callback(username === "Tina" && password === "Bullock");
-});
-
 app.listen(3000, function(){
   console.log('Server listening on port 3000!');
 });
 
 // admin.route('/')
-//   .get(auth.connect(basic), function(req, res){
+//   .get(auth.connect(digest), function(req, res){
 //     res.end('Welcome to private area - ' + req.user);
 //   });
 

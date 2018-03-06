@@ -1,6 +1,9 @@
 function printErrorMessage(mode, contents){
   var message;
   switch (mode) {
+    case 0:
+      message = `'${contents[0]}' isn't exist!`;
+      break;
     case 1:
       message = `
 Server'${contents[0]}' is Already exist!

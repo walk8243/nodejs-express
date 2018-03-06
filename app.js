@@ -5,7 +5,8 @@ var express = require('express'),
     config  = require('config');
 
 fs      = require('fs'),
-myFunc  = require('./func.js');
+myFunc  = require('./func.js'),
+error   = require('./error.js');
 // console.log(config);
 
 var digest = auth.digest({
@@ -52,10 +53,9 @@ for(var server of setting.server){
         // console.log(server.name);
         Object.keys(route[serverName]).forEach(function(path){
           // console.log(`'${path}'=> title:'${route[serverName][path].title}', page:'${route[serverName][path].page}'`);
-          if(myFunc.isExistFile(`./page/${serverName}/${route[serverName][path].page}.js`)){
-            page[serverName][path] = require(`./page/${serverName}/${route[serverName][path].page}.js`);
-          }else{
-            console.log(`'./page/${serverName}/${route[serverName][path].page}.js' isn't exist!`);
+          page[serverName][path] = myFunc.readPage(serverName, route[serverName][path].page);
+          if(page[serverName][path] === false){
+            return;
           }
           let sendData = {
             server  : serverName,
@@ -72,10 +72,9 @@ for(var server of setting.server){
       }else{
         Object.keys(route[serverName]).forEach(function(path){
           // console.log(`'${path}'=> title:'${route[serverName][path].title}', page:'${route[serverName][path].page}'`);
-          if(myFunc.isExistFile(`./page/${serverName}/${route[serverName][path].page}.js`)){
-            page[serverName][path] = require(`./page/${serverName}/${route[serverName][path].page}.js`);
-          }else{
-            console.log(`'./page/${serverName}/${route[serverName][path].page}.js' isn't exist!`);
+          page[serverName][path] = myFunc.readPage(serverName, route[serverName][path].page);
+          if(page[serverName][path] === false){
+            return;
           }
           let sendData = {
             server  : serverName,
@@ -115,7 +114,6 @@ function onRequest(req, res, data){
 
   // console.log(data);
   // console.log(req.params);
-  page[data.server][data.path].render(res, data);
   if(Object.keys(req.params).length > 0){
     var vars = req.params;
     Object.keys(vars).forEach(function(key){
@@ -126,7 +124,14 @@ function onRequest(req, res, data){
       }
     });
   }
-  res.end(data.title);
+  // console.log(page[data.server][data.path]);
+  if(page[data.server][data.path] === null){
+    res.status(404).end();
+  }else{
+    res.status(200);
+    page[data.server][data.path].render(res, data);
+  }
+  // res.end(data.title);
 }
 
 function moldingRoute(inputArea, obj, basePath){

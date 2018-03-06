@@ -9,5 +9,4 @@ class Index extends Page {
   }
 }
 
-const page = new Index();
-module.exports = page;
+module.exports = new Index();

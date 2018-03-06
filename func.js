@@ -3,7 +3,7 @@ function renderEjs(res, content){
   res.end(content);
 }
 
-function readPage(server, page){
+function readPage(server, page, data){
   if(isExistFile(`./page/${server}/${page}.js`)){
     // console.log(server + ' => ' + page);
     var pageJs = require(`./page/${server}/${page}.js`);
@@ -14,6 +14,7 @@ function readPage(server, page){
     if(pageJs.template){
       if(isExistFile(pageJs.template)){
         // console.log('template Yes!');
+        pageJs.setData(data);
         pageJs.createTemplate();
         return pageJs;
       }else{

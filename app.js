@@ -53,8 +53,8 @@ for(var server of setting.server){
         // console.log(server.name);
         Object.keys(route[serverName]).forEach(function(path){
           // console.log(`'${path}'=> title:'${route[serverName][path].title}', page:'${route[serverName][path].page}'`);
-          page[serverName][path] = myFunc.readPage(serverName, route[serverName][path].page);
           let sendData = createSendData(server, path);
+          page[serverName][path] = myFunc.readPage(serverName, route[serverName][path].page, sendData);
           if(page[serverName][path] === false){
             return;
           }
@@ -66,8 +66,8 @@ for(var server of setting.server){
       }else{
         Object.keys(route[serverName]).forEach(function(path){
           // console.log(`'${path}'=> title:'${route[serverName][path].title}', page:'${route[serverName][path].page}'`);
-          page[serverName][path] = myFunc.readPage(serverName, route[serverName][path].page);
           let sendData = createSendData(server, path);
+          page[serverName][path] = myFunc.readPage(serverName, route[serverName][path].page, sendData);
           if(page[serverName][path] === false){
             return;
           }

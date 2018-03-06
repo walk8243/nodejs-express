@@ -54,15 +54,9 @@ for(var server of setting.server){
         Object.keys(route[serverName]).forEach(function(path){
           // console.log(`'${path}'=> title:'${route[serverName][path].title}', page:'${route[serverName][path].page}'`);
           page[serverName][path] = myFunc.readPage(serverName, route[serverName][path].page);
+          let sendData = createSendData(server, path);
           if(page[serverName][path] === false){
             return;
-          }
-          let sendData = {
-            server  : serverName,
-            path    : path,
-            title   : route[serverName][path].title,
-            page    : route[serverName][path].page,
-            var     : route[serverName][path].var
           }
           eval(`${serverName}`).route(path)
             .get(auth.connect(digest), function(req, res){
@@ -73,15 +67,9 @@ for(var server of setting.server){
         Object.keys(route[serverName]).forEach(function(path){
           // console.log(`'${path}'=> title:'${route[serverName][path].title}', page:'${route[serverName][path].page}'`);
           page[serverName][path] = myFunc.readPage(serverName, route[serverName][path].page);
+          let sendData = createSendData(server, path);
           if(page[serverName][path] === false){
             return;
-          }
-          let sendData = {
-            server  : serverName,
-            path    : path,
-            title   : route[serverName][path].title,
-            page    : route[serverName][path].page,
-            var     : route[serverName][path].var
           }
           eval(`${serverName}`).route(path)
             .get(function(req, res){
@@ -126,7 +114,7 @@ function onRequest(req, res, data){
   }
   // console.log(page[data.server][data.path]);
   if(page[data.server][data.path] === null){
-    res.status(404).end();
+    res.status(204).end();
   }else{
     res.status(200);
     page[data.server][data.path].render(res, data);
@@ -168,4 +156,15 @@ function moldingRoute(inputArea, obj, basePath){
 
     delete rest[obj[key].var];
   });
+}
+
+function createSendData(server, path){
+  return {
+    server  : server.name,
+    site    : server.title,
+    path    : path,
+    title   : route[server.name][path].title,
+    page    : route[server.name][path].page,
+    var     : route[server.name][path].var
+  };
 }

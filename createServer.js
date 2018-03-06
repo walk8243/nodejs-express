@@ -25,6 +25,7 @@ try{
     }
     newServer = {
       name: servername,
+      title: servername,
       subdomain: [servername],
       route: `${servername}.yml`
     };

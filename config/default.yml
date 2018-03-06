@@ -2,17 +2,20 @@ setting:
   hostname: localhost
   server:
     - name: main
+      title: メイン
       subdomain:
         - ~
         - www
         - main
       route: route.yml
     - name: admin
+      title: 管理
       subdomain:
         - admin
       route: admin.yml
       auth: true
     - name: create
+      title: 新規
       subdomain:
         - create
       route: create.yml

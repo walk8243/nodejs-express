@@ -4,4 +4,17 @@
       baseTempDir:<br />
       ==> <?= baseDir ?>
     </p>
+    <table>
+      <tbody>
+        <%
+          var mapBlock = map.Block;
+          Object.keys(mapBlock).forEach(function(key){
+        %>
+        <tr>
+          <th><%= key %></th>
+          <td><%= mapBlock[key] %></td>
+        </tr>
+        <% }); %>
+      </tbody>
+    </table>
 <?- include(baseDir+'/common/_footer') -?>

@@ -98,8 +98,6 @@ app.listen(3000, function(){
 //   });
 
 function onRequest(req, res, data){
-  data.param = req.params;
-
   // console.log(data);
   // console.log(req.params);
   if(Object.keys(req.params).length > 0){
@@ -113,11 +111,11 @@ function onRequest(req, res, data){
     });
   }
   // console.log(page[data.server][data.path]);
-  if(page[data.server][data.path] === null){
+  if(page[data.server.id][data.page.path] === null){
     res.status(204).end();
   }else{
     res.status(200);
-    page[data.server][data.path].render(res, data);
+    page[data.server.id][data.page.path].render(res, req.params);
   }
   // res.end(data.title);
 }
@@ -160,11 +158,15 @@ function moldingRoute(inputArea, obj, basePath){
 
 function createSendData(server, path){
   return {
-    server  : server.name,
-    site    : server.title,
-    path    : path,
-    title   : route[server.name][path].title,
-    page    : route[server.name][path].page,
+    server  : {
+      id    : server.name,
+      name  : server.title
+    },
+    page    : {
+      id    : route[server.name][path].page,
+      title : route[server.name][path].title,
+      path  : path
+    },
     var     : route[server.name][path].var
-  };
+  }
 }

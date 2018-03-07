@@ -1,4 +1,4 @@
-var ejs = require('ejs');
+ejs     = require('ejs');
 myFunc  = require('./func.js');
 
 class Page {
@@ -24,7 +24,7 @@ class Page {
 
   createTemplate(){
     if(!this.baseTempDir){
-      this.baseTempDir = `${__dirname}/template/${this.pageData.server}`;
+      this.baseTempDir = `${__dirname}/template/${this.pageData.server.id}`;
     }
     // console.log(this.baseTempDir);
 
@@ -35,6 +35,7 @@ class Page {
   }
 
   render(res, data){
+    this.pageData.param = data;
     myFunc.renderEjs(res, this.htmlStr, this.pageData);
   }
 }

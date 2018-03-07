@@ -16,6 +16,8 @@ class Page {
   setTemplate(filepath){
     if(myFunc.isExistFile(`./template/${filepath}.ejs`)){
       this.template = `./template/${filepath}.ejs`;
+    }else if(myFunc.isExistFile(`./template/${filepath}/index.ejs`)){
+      this.template = `./template/${filepath}/index.ejs`;
     }else{
       this.template = null;
     }

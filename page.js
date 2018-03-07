@@ -31,11 +31,11 @@ class Page {
     var tempEjs = fs.readFileSync(this.template).toString();
     this.pageData['baseDir'] = this.baseTempDir;
     // console.log(tempEjs);
-    this.htmlStr = ejs.render(tempEjs, this.pageData);
+    this.htmlStr = ejs.render(tempEjs, this.pageData, {delimiter: '?'});
   }
 
   render(res, data){
-    myFunc.renderEjs(res, this.htmlStr);
+    myFunc.renderEjs(res, this.htmlStr, this.pageData);
   }
 }
 

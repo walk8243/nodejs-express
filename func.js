@@ -1,6 +1,7 @@
-function renderEjs(res, content){
+function renderEjs(res, content, data){
   // console.log(content);
-  res.end(content);
+  // console.log(data);
+  res.end(ejs.render(content, data));
 }
 
 function readPage(server, page, data){

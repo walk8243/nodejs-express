@@ -92,14 +92,9 @@ app.listen(3000, function(){
   console.log('Server listening on port 3000!');
 });
 
-// admin.route('/')
-//   .get(auth.connect(digest), function(req, res){
-//     res.end('Welcome to private area - ' + req.user);
-//   });
-
 function onRequest(req, res, data){
   // console.log(data);
-  // console.log(req.params);
+  console.log(req.params);
   if(Object.keys(req.params).length > 0){
     var vars = req.params;
     Object.keys(vars).forEach(function(key){

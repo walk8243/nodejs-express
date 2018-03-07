@@ -37,6 +37,7 @@ class Page {
   }
 
   render(res, data){
+    // console.log(data);
     this.pageData.param = data;
     myFunc.renderEjs(res, this.htmlStr, this.pageData);
   }

@@ -1,6 +1,6 @@
 function renderEjs(res, content, data){
   // console.log(content);
-  // console.log(data);
+  console.log(data);
   res.end(ejs.render(content, data));
 }
 

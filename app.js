@@ -84,9 +84,6 @@ for(var server of setting.server){
     console.log(e);
   }
 }
-// if(typeof(main) != "undefined"){
-//   console.log("Yes!");
-// }
 
 app.listen(3000, function(){
   console.log('Server listening on port 3000!');
@@ -94,7 +91,7 @@ app.listen(3000, function(){
 
 function onRequest(req, res, data){
   // console.log(data);
-  console.log(req.params);
+  // console.log(req.params);
   if(Object.keys(req.params).length > 0){
     var vars = req.params;
     Object.keys(vars).forEach(function(key){
@@ -110,6 +107,9 @@ function onRequest(req, res, data){
     res.status(204).end();
   }else{
     res.status(200);
+    if(req.user){
+      req.params.user = req.user;
+    }
     page[data.server.id][data.page.path].render(res, req.params);
   }
   // res.end(data.title);

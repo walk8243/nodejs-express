@@ -1,6 +1,3 @@
-ejs     = require('ejs');
-myFunc  = require('./func.js');
-
 class Page {
   constructor(){
     this.template = null;

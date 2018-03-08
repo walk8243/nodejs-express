@@ -4,6 +4,7 @@ var express = require('express'),
     yaml    = require('js-yaml'),
     config  = require('config');
 
+ejs     = require('ejs'),
 fs      = require('fs'),
 myFunc  = require('./func.js'),
 error   = require('./error.js');
@@ -87,7 +88,6 @@ for(var server of setting.server){
 
 app.listen(3000, function(){
   console.log('Server listening on port 3000!');
-  console.log('http://localhost:3000/');
 });
 
 function onRequest(req, res, data){

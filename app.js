@@ -80,6 +80,8 @@ for(var server of setting.server){
       }
     }else{
       // console.log('No!');
+      console.log(error.printErrorMessage(0, [`./config/${server.route}`]));
+      console.log(error.printErrorMessage(4, [serverName]));
     }
   }catch(e){
     console.log(e);

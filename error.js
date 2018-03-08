@@ -23,6 +23,12 @@ Route file'${contents[0]}' is Already exist!
 Please change the name of '${contents[0]}' or enter a different name!
       `;
       break;
+    case 4:
+      message = `
+Server'${contents[0]}' can't start!
+Please check the configuration file!
+      `;
+      break;
     default:
   }
 

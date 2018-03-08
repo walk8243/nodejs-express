@@ -14,8 +14,3 @@ setting:
         - admin
       route: admin.yml
       auth: true
-    - name: create
-      title: 新規
-      subdomain:
-        - create
-      route: create.yml

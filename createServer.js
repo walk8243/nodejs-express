@@ -1,5 +1,5 @@
-var fs      = require('fs'),
-    yaml    = require('js-yaml');
+var yaml    = require('js-yaml');
+fs  = require('fs');
 
 var error   = require('./error.js');
 myFunc  = require('./func.js');
@@ -76,9 +76,9 @@ try{
       // console.log('No!');
     }
     fs.mkdirSync(pageDir);
-    fs.writeFile(pageDir+'/index.js', '', function(err){
+    fs.writeFile(pageDir+'/index.js', returnPageJsContent(), function(err){
       if(err){throw err;}
-      console.log(`Page directory('${pageDir}') has been created!`);
+      console.log(`Page directory('${pageDir}/index.js') has been created!`);
     });
 
     // templateディレクトリに追加
@@ -90,9 +90,9 @@ try{
       // console.log('No!');
     }
     fs.mkdirSync(templateDir);
-    fs.writeFile(templateDir+'/index.ejs', '', function(err){
+    fs.writeFile(templateDir+'/index.ejs', returnTemplateContent(), function(err){
       if(err){throw err;}
-      console.log(`Template directory('${templateDir}') has been created!`);
+      console.log(`Template directory('${templateDir}/index.ejs') has been created!`);
     });
 
     // 設定情報をyaml型に変換
@@ -130,4 +130,30 @@ function rmdir(path){
   }
   fs.rmdirSync(path);
   // console.log(`${path} was deleted`);
+}
+
+function returnPageJsContent(){
+  var pageJsContent = `
+const Page = require(process.cwd() + '/page.js');
+
+class Index extends Page {
+  constructor(){
+    super();
+  }
+}
+
+module.exports = new Index();
+`;
+  pageJsContent = pageJsContent.substring(1);
+  return pageJsContent;
+}
+
+function returnTemplateContent(){
+  var templateContent = `
+baseTempDir => <?= baseDir ?>
+Page Title => <%= page.title %>
+Server Name => <%= server.name %>
+`;
+  templateContent = templateContent.substring(1);
+  return templateContent;
 }

@@ -9,11 +9,6 @@ myFunc  = require('./func.js'),
 error   = require('./error.js');
 // console.log(config);
 
-var digest = auth.digest({
-  realm : "admin",
-  file  : "./.htpasswd"
-});
-
 const setting   = config.setting,
       hostname  = setting.hostname;
 var app = express();
@@ -92,6 +87,7 @@ for(var server of setting.server){
 
 app.listen(3000, function(){
   console.log('Server listening on port 3000!');
+  console.log('http://localhost:3000/');
 });
 
 function onRequest(req, res, data){

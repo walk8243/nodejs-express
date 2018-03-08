@@ -20,7 +20,8 @@ var app = express();
 
 var route = {},
     page  = {},
-    rest;
+    rest,
+    authFile = './.htpasswd';
 for(var server of setting.server){
   // console.log(server);
   let serverName = server.name;
@@ -51,6 +52,10 @@ for(var server of setting.server){
 
       if(server.hasOwnProperty('auth') && server.auth){
         // console.log(server.name);
+        let digest = auth.digest({
+          realm : serverName,
+          file  : authFile
+        });
         Object.keys(route[serverName]).forEach(function(path){
           // console.log(`'${path}'=> title:'${route[serverName][path].title}', page:'${route[serverName][path].page}'`);
           let sendData = createSendData(server, path);
